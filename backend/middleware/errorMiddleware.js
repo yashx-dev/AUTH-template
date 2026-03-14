@@ -2,7 +2,7 @@ import { sendError } from "../utils/errorHandler.js";
 
 const notFound = (req, res, next) => {
   const error = new Error(`Not found - ${req.originalUrl}`);
-  req.status(404);
+  res.status(404);
   next(error);
 };
 const errorHandler = (err, req, res, next) => {
@@ -38,3 +38,5 @@ const errorHandler = (err, req, res, next) => {
     process.env.NODE_ENV === "development" ? err : null,
   );
 };
+
+export { notFound, errorHandler };

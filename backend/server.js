@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import authRoutes from "./routes/authRoutes.js";
+import router from "./routes/authRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
-dotenv.config();
+dotenv.config({quiet: true});
 const app = express();
 
 app.use(express.json());
@@ -37,13 +37,13 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/auth", authRoutes);
+app.use("/auth", router);
 app.use(notFound);
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ MongoDB Connected Successfully");
     console.log("📊 Database:", mongoose.connection.name);
@@ -53,13 +53,13 @@ mongoose
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
       console.log(`🔗 API URL: http://localhost:${PORT}`);
-      console.log(`🔐 Auth routes mounted at: /api/auth`);
+      console.log(`🔐 Auth routes mounted at: /auth`);
       console.log(`📝 Available endpoints:`);
-      console.log(`   POST   /api/auth/register`);
-      console.log(`   POST   /api/auth/login`);
-      console.log(`   POST   /api/auth/logout`);
-      console.log(`   GET    /api/auth/profile`);
-      console.log(`   PUT    /api/auth/profile`);
+      console.log(`   POST   /auth/register`);
+      console.log(`   POST   /auth/login`);
+      console.log(`   POST   /auth/logout`);
+      console.log(`   GET    /auth/profile`);
+      console.log(`   PUT    /auth/profile`);
     });
   })
   .catch((error) => {

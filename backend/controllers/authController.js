@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
     if (!validateRequest(req, res)) return;
 
     const { name, email, password } = req.body;
-
+    
     const userExist = await User.findOne({ email });
     if (userExist) {
       return res.status(400).json({

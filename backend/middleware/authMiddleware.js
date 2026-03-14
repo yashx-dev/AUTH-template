@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
-import User from "../models/userModel.js";
-import { sendError } from "../utils/sendError.js";
+import User from "../models/User.js";
+import { sendError } from "../utils/errorHandler.js";
 
 const protect = async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
-    req.headeres.authorization.startsWith("bearer")
+    req.headers.authorization.startsWith("Bearer")
   ) {
     try {
-      token = req.headeres.authorization.split(" ")[1];
+      token = req.headers.authorization.split(" ")[1];
       console.log("Token found in header");
     } catch (error) {
       console.log("Error while extracting token from header", error);
@@ -18,7 +18,7 @@ const protect = async (req, res, next) => {
   if (!token && req.cookies && req.cookies.token) {
     try {
       token = req.cookies.token;
-      console.log("TOken found in cookies");
+      console.log("Token found in cookies");
     } catch (error) {
       console.log("Error while extracting token from cookies", error);
     }
@@ -63,5 +63,4 @@ const protect = async (req, res, next) => {
     });
   }
 };
-
-export default protect
+export default protect;
