@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "Password is required"],
     minlength: [6, "Password must be atleast 6 characters long"],
   },
-  date: { type: Date, default: Date.now, immutable: true },
+  createdAt: { type: Date, default: Date.now, immutable: true },
 });
 
 userSchema.pre("save", async function () {
