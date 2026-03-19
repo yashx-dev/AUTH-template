@@ -129,7 +129,7 @@ router.get("/profile", protect, async (req, res) => {
         id: req.user._id,
         name: req.user.name,
         email: req.user.email,
-        createdAt: req.user.date,
+        createdAt: req.user.createdAt,
       },
     });
     

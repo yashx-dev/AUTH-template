@@ -4,9 +4,6 @@ import {
   register as apiRegister,
   logout as apiLogout,
   getProfile,
-  isAuthenticated,
-  getCurrentUser,
-  getprofile,
 } from "../services/api";
 
 const AuthContext = createContext();

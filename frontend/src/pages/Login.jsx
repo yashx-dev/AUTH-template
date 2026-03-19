@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthForm } from '../hooks/useAuthForm';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Login = () => {
+  usePageTitle('Login');
   const { formData, formErrors, loading, error, handleChange, handleSubmit } = useAuthForm('login');
 
   return (

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useAuthForm } from '../hooks/useAuthForm';
-import { useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import LoadingSpinner from '../components/LoadingSpinner';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { useAuthForm } from "../hooks/useAuthForm";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const Profile = () => {
   const { user, logout, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  usePageTitle("Profile");
+  const [successMessage, setSuccessMessage] = useState("");
   
-  // ✅ Use our existing hook for profile form!
   const {
     formData,
     formErrors,
@@ -18,10 +20,9 @@ const Profile = () => {
     handleChange,
     handleProfileSubmit,
     resetForm,
-    setFormData
-  } = useAuthForm('profile');
+    setFormData,
+  } = useAuthForm("profile");
 
-  // Set initial form data when user loads
   useEffect(() => {
     if (user) {
       setFormData({ name: user.name, email: user.email });
@@ -32,6 +33,8 @@ const Profile = () => {
     const result = await handleProfileSubmit(e);
     if (result?.success) {
       setIsEditing(false);
+      setSuccessMessage("Profile updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
     }
   };
 
@@ -42,17 +45,34 @@ const Profile = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      const date = new Date(dateString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return "Invalid date";
+
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return "Invalid date";
+    }
+  };
+  
+console.log('Date value:', user?.createdAt);
+console.log('Formatted date:', formatDate(user?.createdAt));
   if (authLoading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          
-          {/* Header */}
           <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
             <div>
               <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -67,14 +87,20 @@ const Profile = () => {
             </Button>
           </div>
 
-          {/* Profile Content */}
+          {successMessage && (
+            <div className="mx-4 mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+              {successMessage}
+            </div>
+          )}
+
           <div className="border-t border-gray-200">
             {!isEditing ? (
-              // View Mode
               <div className="px-4 py-5 sm:px-6">
                 <dl className="divide-y divide-gray-200">
                   <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Full name
+                    </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       {user?.name}
                     </dd>
@@ -86,9 +112,11 @@ const Profile = () => {
                     </dd>
                   </div>
                   <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <dt className="text-sm font-medium text-gray-500">Member since</dt>
+                    <dt className="text-sm font-medium text-gray-500">
+                      Member since
+                    </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {new Date(user?.createdAt).toLocaleDateString()}
+                      {formatDate(user?.createdAt)}
                     </dd>
                   </div>
                 </dl>
@@ -99,37 +127,47 @@ const Profile = () => {
                 </div>
               </div>
             ) : (
-              // Edit Mode
-              <form onSubmit={handleSubmit} className="px-4 py-5 sm:px-6 space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                className="px-4 py-5 sm:px-6 space-y-4"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Name
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     className={`mt-1 block w-full border ${
-                      formErrors.name ? 'border-red-300' : 'border-gray-300'
+                      formErrors.name ? "border-red-300" : "border-gray-300"
                     } rounded-md shadow-sm p-2`}
                   />
                   {formErrors.name && (
-                    <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {formErrors.name}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     className={`mt-1 block w-full border ${
-                      formErrors.email ? 'border-red-300' : 'border-gray-300'
+                      formErrors.email ? "border-red-300" : "border-gray-300"
                     } rounded-md shadow-sm p-2`}
                   />
                   {formErrors.email && (
-                    <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {formErrors.email}
+                    </p>
                   )}
                 </div>
 
@@ -137,7 +175,11 @@ const Profile = () => {
                   <Button type="submit" loading={formLoading} variant="primary">
                     Save Changes
                   </Button>
-                  <Button type="button" onClick={handleCancel} variant="secondary">
+                  <Button
+                    type="button"
+                    onClick={handleCancel}
+                    variant="secondary"
+                  >
                     Cancel
                   </Button>
                 </div>

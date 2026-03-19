@@ -1,7 +1,9 @@
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Dashboard = () => {
+  usePageTitle('Dashboard');
   const { user, loading } = useAuth();
 
   if (loading) return <LoadingSpinner />;

@@ -1,13 +1,26 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
+  const getLinkClass = (path) => {
+    return `px-3 py-2 rounded-md text-sm font-medium ${
+      isActive(path)
+        ? 'bg-indigo-700 text-white'
+        : 'text-white hover:bg-indigo-700'
+    }`;
   };
 
   return (
@@ -15,22 +28,25 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo/Brand */}
           <div className="flex items-center">
             <Link to="/" className="text-white font-bold text-xl">
               AuthApp
             </Link>
           </div>
 
-          {/* Navigation Links */}
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              // Auth Navigation
               <>
-                <Link to="/dashboard" className="text-white hover:bg-indigo-700 px-3 py-2 rounded-md">
+                <Link 
+                  to="/dashboard" 
+                  className={getLinkClass('/dashboard')}
+                >
                   Dashboard
                 </Link>
-                <Link to="/profile" className="text-white hover:bg-indigo-700 px-3 py-2 rounded-md">
+                <Link 
+                  to="/profile" 
+                  className={getLinkClass('/profile')}
+                >
                   Profile
                 </Link>
                 <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-indigo-400">
@@ -46,12 +62,17 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              // Public Navigation
               <>
-                <Link to="/login" className="text-white hover:bg-indigo-700 px-3 py-2 rounded-md">
+                <Link 
+                  to="/login" 
+                  className={getLinkClass('/login')}
+                >
                   Login
                 </Link>
-                <Link to="/register" className="bg-indigo-700 text-white px-3 py-2 rounded-md hover:bg-indigo-800">
+                <Link 
+                  to="/register" 
+                  className={getLinkClass('/register')}
+                >
                   Register
                 </Link>
               </>
